@@ -1,0 +1,13 @@
+{% extends 'notifier/main.html' %}
+{% load account %}
+{% load i18n %}
+
+{% block main_message %}
+    <p>{% blocktrans with site_name=current_site.name %} Thanks for signing up on {{ site_name }}
+        .{% endblocktrans %}</p>
+    <p>{% blocktrans %}Click the <a href="{{ activate_url }}">link</a> to activate your account or push the button
+        below.{% endblocktrans %}</p>
+{% endblock %}
+
+{% block button_link %}{{ activate_url }}{% endblock %}
+{% block button_text %}{% trans "Activate account" %}{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'notifier/main.html' %}
+
+{% block main_message %}
+    <p>User {{ ad.user.username }} has accepted your reply to "{{ ad.title }}".</p>
+    <br>
+{% endblock %}
+
+{% block button_link %}{{ ad_link }}{% endblock %}
+{% block button_text %}View ad{% endblock %}

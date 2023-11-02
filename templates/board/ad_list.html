@@ -1,0 +1,85 @@
+{% extends 'flatpages/default.html' %}
+{% load common_extras %}
+
+{% block title %}{% block page_title %}
+    Board
+{% endblock %}{% endblock %}
+
+{% block top_links %}
+    {% if user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'ad_create' %}">Create ad</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">|</a></li>
+    {% endif %}
+    {{ block.super }}
+{% endblock top_links %}
+
+{% block page_content %}
+    <form action="" method="get">
+        {{ filterset.form.as_p }}
+        <input type="submit" value="Search"/>
+    </form>
+    {% if ads %}
+        {% for ad in ads %}
+            <hr>
+            <table style="margin-left:auto;margin-right:auto;">
+                <tr>
+                    <td>
+                        {{ ad.create_ts|date:'d.m.y H:i' }}
+                        <b>{{ ad.user }}: <a href="{% url 'ad_details' ad.id %}">{{ ad.title }}</a></b><br>
+                    </td>
+                    {% if user.is_authenticated %}
+                        {% if user == ad.user %}
+                            <td>
+                                <form action="{% url 'ad_edit' ad.id %}">
+                                    <button type="submit">Edit ad</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="{% url 'ad_delete' ad.id %}">
+                                    <button type="submit">Delete ad</button>
+                                </form>
+                            </td>
+                        {% else %}
+                            <td>
+                                <form action="{% url 'reply_create' ad.id %}">
+                                    <button type="submit">Reply</button>
+                                </form>
+                            </td>
+                        {% endif %}
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td>
+                        Replies: {{ ad.reply_set.count }}
+                    </td>
+                </tr>
+            </table>
+            {% if personal %}
+                {% include 'board/replies.html' %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        No ads yet :-(
+    {% endif %}
+
+    <hr>
+    {% if page_obj.paginator.num_pages > 1 %}
+        {% if page_obj.has_previous %}
+            <a href="?{% url_replace page=1 %}">1</a>
+            {% if page_obj.previous_page_number != 1 %}
+                {% pagination_dots_left %}
+                <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+            {% endif %}
+        {% endif %}
+
+        {{ page_obj.number }}
+
+        {% if page_obj.has_next %}
+            <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+            {% if paginator.num_pages != page_obj.next_page_number %}
+                {% pagination_dots_right %}
+                <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endblock page_content %}

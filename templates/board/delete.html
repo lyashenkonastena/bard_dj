@@ -1,0 +1,15 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}{% block page_title %}
+    Delete {{ object_type }}
+{% endblock %}{% endblock %}
+
+{% block page_content %}
+    <h1>Your {{ object_type }} will be removed permanently!</h1>
+    <hr>
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Continue?</p>
+        <input type="submit" value="Delete"/>
+    </form>
+{% endblock page_content %}

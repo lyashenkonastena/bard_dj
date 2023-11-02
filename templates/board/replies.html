@@ -1,0 +1,45 @@
+{% for reply in ad.reply_set.all %}
+    <hr>
+    <table style="margin-left:auto;margin-right:auto;">
+        <tr>
+            <td>
+                <b><a href="{% url 'reply_details' reply.id %}">{{ reply.user }} {{ reply.create_ts|date:'d.m.y H:i' }}</a>
+                    ({% if reply.accepted %}accepted{% elif reply.declined %}declined{% else %}new{% endif %}):</b><br>
+            </td>
+            {% if user.is_authenticated %}
+                {% if user == reply.user %}
+                    <td>
+                        <form action="{% url 'reply_edit' reply.id %}">
+                            <button type="submit">Edit reply</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{% url 'reply_delete' reply.id %}">
+                            <button type="submit">Delete reply</button>
+                        </form>
+                    </td>
+                {% elif user == reply.ad.user %}
+                    {% if not reply.accepted %}
+                        <td>
+                            <form action="{% url 'reply_accept' reply.id %}">
+                                <button type="submit">Accept</button>
+                            </form>
+                        </td>
+                    {% endif %}
+                    {% if not reply.declined %}
+                        <td>
+                            <form action="{% url 'reply_decline' reply.id %}">
+                                <button type="submit">Decline</button>
+                            </form>
+                        </td>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </tr>
+        <tr>
+            <td>
+                {{ reply.content }}
+            </td>
+        </tr>
+    </table>
+{% endfor %}

@@ -1,0 +1,39 @@
+{% extends 'flatpages/default.html' %}
+{% load common_extras %}
+
+{% block title %}{% block page_title %}
+    Blog
+{% endblock %}{% endblock %}
+
+{% block page_content %}
+    {% if posts %}
+        {% for post in posts %}
+            <hr>
+            <b>{{ post.create_ts|date:'d.m.y' }} <a href="{% url 'post_details' post.id %}">{{ post.title }}</a></b><br>
+        {% endfor %}
+    {% else %}
+        Nothing here yet :-(
+    {% endif %}
+
+    <hr>
+    {% if page_obj.paginator.num_pages > 1 %}
+        {% if page_obj.has_previous %}
+            <a href="?{% url_replace page=1 %}">1</a>
+            {% if page_obj.previous_page_number != 1 %}
+                {% pagination_dots_left %}
+                <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+            {% endif %}
+        {% endif %}
+
+        {{ page_obj.number }}
+
+        {% if page_obj.has_next %}
+            <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+            {% if paginator.num_pages != page_obj.next_page_number %}
+                {% pagination_dots_right %}
+                <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+{% endblock page_content %}

@@ -1,0 +1,30 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}{% block page_title %}
+    Reply
+{% endblock %}{% endblock %}
+
+{% block top_links %}
+    {% if user.is_authenticated %}
+        {% if user == reply.user %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'reply_edit' reply.id %}">Edit reply</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'reply_delete' reply.id %}">Delete reply</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">|</a></li>
+        {% elif user == reply.ad.user %}
+            {% if not reply.accepted %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'reply_accept' reply.id %}">Accept</a></li>
+            {% endif %}
+            {% if not reply.declined %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'reply_decline' reply.id %}">Decline</a></li>
+            {% endif %}
+            <li class="nav-item"><a class="nav-link" href="#">|</a></li>
+        {% endif %}
+    {% endif %}
+    {{ block.super }}
+{% endblock top_links %}
+
+{% block page_content %}
+    <b>{{ reply.user }}</b>, {{ reply.create_ts|date:'d.m.y H:i' }}
+    <hr>
+    {{ reply.content }}
+{% endblock page_content %}

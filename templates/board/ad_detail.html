@@ -1,0 +1,43 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}{% block page_title %}
+    Ad
+{% endblock %}{% endblock %}
+
+{% block top_links %}
+    {% if user.is_authenticated %}
+        {% if user == ad.user %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'ad_edit' ad.id %}">Edit ad</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'ad_delete' ad.id %}">Delete ad</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">|</a></li>
+        {% elif object_type != 'reply' %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'reply_create' ad.id %}">Reply</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">|</a></li>
+        {% endif %}
+    {% endif %}
+    {{ block.super }}
+{% endblock top_links %}
+
+{% block page_content %}
+    <h2>{{ ad.title }}</h2>
+    <b>{{ ad.user }}</b>, {{ ad.create_ts|date:'d.m.y H:i' }}
+    <hr>
+    {{ ad.content|safe }}
+
+    {% if ad.reply_set.count %}
+        <br><br>
+        <h4>Replies</h4>
+        {% include 'board/replies.html' %}
+    {% endif %}
+
+    {% if object_type == 'reply' %}
+        <hr>
+        {{ action }} reply:
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Publish"/>
+        </form>
+    {% endif %}
+
+{% endblock page_content %}

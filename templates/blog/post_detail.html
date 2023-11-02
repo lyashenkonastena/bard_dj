@@ -1,0 +1,12 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}{% block page_title %}
+    Post
+{% endblock %}{% endblock %}
+
+{% block page_content %}
+    <h2>{{ post.title }}</h2>
+    {{ post.create_ts|date:'d.m.y H:i' }}
+    <hr>
+    {{ post.content|safe }}
+{% endblock page_content %}
